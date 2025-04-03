@@ -1,11 +1,11 @@
 
 
-Open Products API Client (for Django)
+Open Product API Client (for Django)
 ==============================
 
 :Version: 0.1.0
-:Source: https://github.com/maykinmedia/open-products-api-client
-:Keywords: Objects API, Client, Django
+:Source: https://github.com/maykinmedia/open-product-api-client
+:Keywords: Open Product API, Client, Django
 :PythonVersion: 3.9
 
 |build-status|
@@ -15,7 +15,7 @@ Open Products API Client (for Django)
 About
 =====
 
-Easily integrate `Open Products API`_ in your Django application. 
+Easily integrate `Open Product API`_ in your Django application. 
 
 Installation
 ============
@@ -30,14 +30,14 @@ Requirements
 Install
 -------
 
-You can the install Open Products API Client either via the Python Package Index (PyPI) or 
+You can the install Open Product API Client either via the Python Package Index (PyPI) or 
 from source.
 
 To install using ``pip``:
 
 .. code-block:: bash
 
-    pip install products-api-client-django
+    pip install open-product-api-client
 
 
 Usage
@@ -45,19 +45,19 @@ Usage
 
 To use this with your project you need to follow these steps:
 
-#. Add ``productsapiclient`` to ``INSTALLED_APPS`` in your Django project's 
+#. Add ``openproductapiclient`` to ``INSTALLED_APPS`` in your Django project's 
    ``settings.py``:
 
    .. code-block:: python
 
       INSTALLED_APPS = (
           # ...,
-          "productssapiclient",
+          "openproductapiclient",
       )
 
 
 #. Configure your Objects API connection and settings in the admin, under 
-   **Products API client configuration**.
+   **Open Product API client configuration**.
 
 #. Done.
 
@@ -71,8 +71,8 @@ Licensed under the `MIT`_.
 
 .. _`Maykin Media B.V.`: https://www.maykinmedia.nl
 .. _`MIT`: LICENSE
-.. _`Objects API`: https://github.com/maykinmedia/objects-api
+.. _`Open Product API`: https://github.com/maykinmedia/open-product
 
-.. |build-status| image:: https://github.com/maykinmedia/objects-api-client-django/workflows/Run%20CI/badge.svg
+.. |build-status| image:: https://github.com/maykinmedia/open-product-api-client/workflows/Run%20CI/badge.svg
     :alt: Build status
-    :target: https://github.com/maykinmedia/objects-api-client-django/actions?query=workflow%3A%22Run+CI%22
+    :target: https://github.com/maykinmedia/open-product-api-client/actions?query=workflow%3A%22Run+CI%22
