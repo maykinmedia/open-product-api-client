@@ -1,10 +1,10 @@
 
 
-Objects API Client (for Django)
+Open Products API Client (for Django)
 ==============================
 
 :Version: 0.1.0
-:Source: https://github.com/maykinmedia/objects-api-client-django
+:Source: https://github.com/maykinmedia/open-products-api-client
 :Keywords: Objects API, Client, Django
 :PythonVersion: 3.9
 
@@ -15,7 +15,7 @@ Objects API Client (for Django)
 About
 =====
 
-Easily integrate `Objects API`_ in your Django application. 
+Easily integrate `Open Products API`_ in your Django application. 
 
 Installation
 ============
@@ -30,14 +30,14 @@ Requirements
 Install
 -------
 
-You can the install Objects API Client either via the Python Package Index (PyPI) or 
+You can the install Open Products API Client either via the Python Package Index (PyPI) or 
 from source.
 
 To install using ``pip``:
 
 .. code-block:: bash
 
-    pip install objects-api-client-django
+    pip install products-api-client-django
 
 
 Usage
@@ -45,19 +45,19 @@ Usage
 
 To use this with your project you need to follow these steps:
 
-#. Add ``objectsapiclient`` to ``INSTALLED_APPS`` in your Django project's 
+#. Add ``productsapiclient`` to ``INSTALLED_APPS`` in your Django project's 
    ``settings.py``:
 
    .. code-block:: python
 
       INSTALLED_APPS = (
           # ...,
-          "objectsapiclient",
+          "productssapiclient",
       )
 
 
 #. Configure your Objects API connection and settings in the admin, under 
-   **Objects API client configuration**.
+   **Products API client configuration**.
 
 #. Done.
 
