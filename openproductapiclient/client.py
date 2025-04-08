@@ -4,10 +4,7 @@ from urllib.parse import urljoin
 
 from requests.exceptions import HTTPError
 
-# from zgw_consumers.api_models.base import factory
 from zgw_consumers.client import build_client as build_zgw_client
-
-# from .dataclasses import Object, ObjectType
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +19,13 @@ class Client:
         )
 
     def is_healthy(self) -> Tuple[bool, str]:
-        """ """
+        """
+        Checks whether the API(s) are functioning
+         properly using test-requests.
+        """
+
         try:
+            # TODO: Actually do this
             # We do a head request to actually hit a protected endpoint without
             # getting a whole bunch of data.
             self.get_products()
@@ -37,64 +39,163 @@ class Client:
 
         return (False, message)
 
-    def get_products(self) -> list:
+    # **************************
+    # Product API endpoints
+    # **************************
+
+    def __products_api_get_request(self, url, **kwargs):
+        """
+        Retrieves products from products API.
+        Filter-arguments can be passed as kwargs.
+        """
+
         response = self.open_product_api_client.request(
-            "get", urljoin(base=self.open_product_api_client.base_url, url="producten")
+            "get",
+            urljoin(base=self.open_product_api_client.base_url, url=url),
+            params=kwargs,
         )
+
         response.raise_for_status()
         results = response.json()
-        return results if results else "Could not ping products API :-("
 
-    def get_product_types(self) -> list:
+        if not results:
+            return "Failed to fetch products API."
+        return results
+
+    # def get_products(self, *, aanmaak_datum: str|None = None) -> list:
+    def get_products(self, **kwargs) -> list:
+        """
+        Retrieves products from products API.
+        Filter-arguments can be passed as kwargs.
+        """
+
+        results = self.__products_api_get_request("producten", **kwargs)
+
+        if not results:
+            return "Failed to fetch products API."
+        return results
+
+    def get_product(self, id, **kwargs):
+        """
+        Retrieves a product from products API.
+        Filter-arguments can be passed as kwargs.
+        """
+
+        results = self.__products_api_get_request(f"producten/{id}/", **kwargs)
+
+        if not results:
+            return "Failed to fetch products API."
+        return results
+
+    # **************************
+    # Product Type API endpoints
+    # **************************
+
+    def get_product_types(self, **kwargs) -> list:
+        """
+        Retrieves all product types from producttypes API.
+        Filter-argumentscan be passed as kwargs.
+        """
+
         response = self.open_product_types_api_client.request(
             "get",
             urljoin(
                 base=self.open_product_types_api_client.base_url, url="producttypen"
             ),
+            params=kwargs,
         )
+
         response.raise_for_status()
         results = response.json()
-        return "Ok!" if results else "Could not ping producttypes API :-("
 
-    # def object_type_uuid_to_url(self, uuid):
-    #     return "{}objecttypes/{}/".format(self.object_types_api_client.base_url, uuid)
+        if not results:
+            return "Failed to fetch producttypes API."
+        return results
 
-    # def get_objects(self, object_type_uuid=None) -> list:
-    #     """
-    #     Retrieve all available Objects from the Objects API.
-    #     Generally you'd want to filter the results to a single ObjectType UUID.
+    def get_product_type(self, id, **kwargs):
+        """
+        Retrieves a specific product type from producttypes API.
+        Filter-arguments can be passed as kwargs.
+        """
 
-    #     :returns: Returns a list of Object dataclasses
-    #     """
-    #     if object_type_uuid:
-    #         ot_url = self.object_type_uuid_to_url(object_type_uuid)
-    #         response = self.open_product_api_client.request(
-    #             "get",
-    #             urljoin(base=self.open_product_api_client.base_url, url="objects"),
-    #             params={"type": ot_url},
-    #         )
-    #     else:
-    #         response = self.open_product_api_client.request(
-    #             "get", urljoin(base=self.open_product_api_client.base_url, url="objects")
-    #         )
+        response = self.open_product_types_api_client.request(
+            "get",
+            urljoin(
+                base=self.open_product_types_api_client.base_url,
+                url=f"producttypen/{id}/",
+            ),
+            params=kwargs,
+        )
 
-    #     response.raise_for_status()
-    #     results = response.json().get("results")
+        response.raise_for_status()
+        results = response.json()
 
-    #     return factory(Object, results) if results else []
+        if not results:
+            return "Failed to fetch producttype from producttypes API."
+        return results
 
-    # def get_object_types(self) -> list:
-    #     """
-    #     Retrieve all available Object Types
+    def get_themes(self, **kwargs) -> list:
+        """
+        Retrieves all themes from producttypes API.
+        Filter-arguments can be passed as kwargs.
+        """
 
-    #     :returns: Returns a list of ObjectType dataclasses
-    #     """
-    #     response = self.object_types_api_client.request(
-    #         method="get",
-    #         url=urljoin(self.object_types_api_client.base_url, "objecttypes"),
-    #     )
+        response = self.open_product_types_api_client.request(
+            "get",
+            urljoin(
+                base=self.open_product_types_api_client.base_url,
+                url="themas",
+            ),
+            params=kwargs,
+        )
 
-    #     response.raise_for_status()
-    #     results = response.json().get("results")
+        response.raise_for_status()
+        results = response.json()
 
-    #     return factory(ObjectType, results) if results else []
+        if not results:
+            return "Failed to fetch themes from producttypes API."
+        return results
+
+    def get_theme(self, id, **kwargs):
+        """
+        Retrieves a theme from producttypes API.
+        Filter-arguments can be passed as kwargs.
+        """
+
+        response = self.open_product_types_api_client.request(
+            "get",
+            urljoin(
+                base=self.open_product_types_api_client.base_url,
+                url=f"themas/{id}",
+            ),
+            params=kwargs,
+        )
+
+        response.raise_for_status()
+        results = response.json()
+
+        if not results:
+            return "Failed to fetch theme from producttypes API."
+        return results
+
+    def get_organizations(self, **kwargs) -> list:
+        """
+        Retrieves all organizations from producttypes API.
+        Filter-arguments can be passed as kwargs.
+        """
+
+        response = self.open_product_types_api_client.request(
+            "get",
+            urljoin(
+                base=self.open_product_types_api_client.base_url,
+                url="organisaties",
+            ),
+            params=kwargs,
+        )
+
+        response.raise_for_status()
+        results = response.json()
+
+        if not results:
+            return "Failed to fetch organizations from producttypes API."
+        return results

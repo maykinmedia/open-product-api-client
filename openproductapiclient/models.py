@@ -13,8 +13,6 @@ from solo.models import SingletonModel
 
 from .client import Client
 
-# from .utils import get_object_type_choices
-
 logger = logging.getLogger(__name__)
 
 
