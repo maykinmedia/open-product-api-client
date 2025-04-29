@@ -9,6 +9,7 @@ Open Product API Client (for Django)
 :PythonVersion: 3.9
 
 |build-status|
+Currently compatible with Open Product 1.0.0
 
 |python-versions| |django-versions| |pypi-version|
 
