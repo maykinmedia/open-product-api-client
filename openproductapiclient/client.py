@@ -1,11 +1,11 @@
 import logging
 from typing import Tuple
 from urllib.parse import urljoin
-from .utils import get_filled_params
 
 from requests.exceptions import HTTPError
-
 from zgw_consumers.client import build_client as build_zgw_client
+
+from .utils import get_filled_params
 
 logger = logging.getLogger(__name__)
 

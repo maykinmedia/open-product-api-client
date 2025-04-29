@@ -57,7 +57,7 @@ To use this with your project you need to follow these steps:
       )
 
 
-#. Configure your Objects API connection and settings in the admin, under 
+#. Configure your Open Product API connection and settings in the admin, under 
    **Open Product API client configuration**.
 
 #. Done.
