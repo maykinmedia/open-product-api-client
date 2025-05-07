@@ -16,7 +16,7 @@ Currently compatible with Open Product 1.0.0
 About
 =====
 
-Easily integrate `Open Product API`_ in your Django application. 
+Easily integrate `Open Product API`_ in your Django application. It currently only supports a few major endpoints such as get products, get producttypes, get themes and get organizations.
 
 Installation
 ============
