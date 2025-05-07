@@ -6,12 +6,14 @@ from requests.exceptions import HTTPError
 from zgw_consumers.client import build_client as build_zgw_client
 
 from .utils import get_filled_params
+import uuid
+from zgw_consumers import service
 
 logger = logging.getLogger(__name__)
 
 
-class Client:
-    def __init__(self, open_product_api_service, open_product_types_api_client):
+class OpenProductClient:
+    def __init__(self, open_product_api_service: service, open_product_types_api_client: service):
         self.open_product_api_client = build_zgw_client(
             service=open_product_api_service
         )
@@ -29,8 +31,8 @@ class Client:
             # TODO: Actually do this
             # We do a head request to actually hit a protected endpoint without
             # getting a whole bunch of data.
-            self.get_products()
-            self.get_product_types()
+            self.list_products()
+            self.list_product_types()
             return (True, "")
         except HTTPError as e:
             message = f"Server did not return a valid response ({e})."
@@ -40,7 +42,7 @@ class Client:
 
         return (False, message)
 
-    def __make_get_request(self, client, url, **kwargs):
+    def _make_get_request(self, client, url, **kwargs):
         """
         Makes a get request to a given client with
         a given url and arguments.
@@ -56,14 +58,14 @@ class Client:
     # Product API endpoints
     # **************************
 
-    def __products_api_get_request(self, url, **kwargs):
+    def _products_api_get_request(self, url, **kwargs):
         """
         Retrieves products from products API.
         Filter-arguments can be passed as kwargs.
         """
 
         client = self.open_product_api_client
-        response = self.__make_get_request(client, url, **kwargs)
+        response = self._make_get_request(client, url, **kwargs)
 
         response.raise_for_status()
         results = response.json()
@@ -72,7 +74,7 @@ class Client:
             return "Failed to fetch products API."
         return results
 
-    def get_products(
+    def list_products(
         self,
         *,
         aanmaak_datum: str | None = None,
@@ -115,29 +117,31 @@ class Client:
         Retrieves products from products API.
         """
 
-        params = get_filled_params(locals())
-        return self.__products_api_get_request("producten", **params)
+        print("PRODUCTS API CALLED")
 
-    def get_product(self, uuid):
+        params = get_filled_params(locals())
+        return self._products_api_get_request("producten", **params)
+
+    def retrieve_product(self, uuid: str | uuid.UUID):
         """
         Retrieves a product from products API.
         Filter-arguments can be passed as kwargs.
         """
 
-        return self.__products_api_get_request(f"producten/{uuid}/")
+        return self._products_api_get_request(f"producten/{uuid}/")
 
     # **************************
     # Product Type API endpoints
     # **************************
 
-    def __producttypes_api_get_request(self, url, **kwargs):
+    def _producttypes_api_get_request(self, url, **kwargs):
         """
         Retrieves products from producttypes API.
         Filter-arguments can be passed as kwargs.
         """
 
         client = self.open_product_types_api_client
-        response = self.__make_get_request(client, url, **kwargs)
+        response = self._make_get_request(client, url, **kwargs)
 
         response.raise_for_status()
         results = response.json()
@@ -146,7 +150,7 @@ class Client:
             return "Failed to fetch producttypes API."
         return results
 
-    def get_product_types(
+    def list_product_types(
         self,
         *,
         aanmaak_datum: str | None = None,
@@ -178,18 +182,20 @@ class Client:
         Retrieves all product types from producttypes API.
         """
 
-        params = get_filled_params(locals())
-        return self.__producttypes_api_get_request("producttypen", **params)
+        print("PRODUCTTYPES API CALLED")
 
-    def get_product_type(self, uuid):
+        params = get_filled_params(locals())
+        return self._producttypes_api_get_request("producttypen", **params)
+
+    def retrieve_product_type(self, uuid: str | uuid.UUID):
         """
         Retrieves a specific product type from producttypes API.
         Filter-arguments can be passed as kwargs.
         """
 
-        return self.__producttypes_api_get_request(f"producttypen/{uuid}/")
+        return self._producttypes_api_get_request(f"producttypen/{uuid}/")
 
-    def get_themes(
+    def list_themes(
         self,
         *,
         aanmaak_datum: str | None = None,
@@ -211,17 +217,17 @@ class Client:
         """
 
         params = get_filled_params(locals())
-        return self.__producttypes_api_get_request("themas", **params)
+        return self._producttypes_api_get_request("themas", **params)
 
-    def get_theme(self, uuid, **kwargs):
+    def retrieve_theme(self, uuid: str | uuid.UUID, **kwargs):
         """
         Retrieves a theme from producttypes API.
         Filter-arguments can be passed as kwargs.
         """
 
-        return self.__producttypes_api_get_request(f"themas/{uuid}/")
+        return self._producttypes_api_get_request(f"themas/{uuid}/")
 
-    def get_organizations(
+    def list_organizations(
         self,
         *,
         code: str | None = None,
@@ -241,4 +247,4 @@ class Client:
         """
 
         params = get_filled_params(locals())
-        return self.__producttypes_api_get_request("organisaties", **params)
+        return self._producttypes_api_get_request("organisaties", **params)

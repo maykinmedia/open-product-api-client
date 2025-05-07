@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from solo.models import SingletonModel
 
-from .client import Client
+from .client import OpenProductClient
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ class Configuration(SingletonModel):
 
     open_product_api_service = models.ForeignKey(
         "zgw_consumers.Service",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="open_product_api_service",
@@ -25,7 +25,7 @@ class Configuration(SingletonModel):
 
     open_product_types_api_service = models.ForeignKey(
         "zgw_consumers.Service",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="open_product_types_api_service",
@@ -39,9 +39,8 @@ class Configuration(SingletonModel):
 
     @property
     def client(self):
-        try:
-            return Client(
-                self.open_product_api_service, self.open_product_types_api_service
-            )
-        except AttributeError:
+        if not self.open_product_api_service and self.open_product_types_api_service:
             return None
+        return OpenProductClient(
+            self.open_product_api_service, self.open_product_types_api_service
+        )
