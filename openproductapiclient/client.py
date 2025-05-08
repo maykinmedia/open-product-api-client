@@ -36,19 +36,15 @@ class OpenProductClient:
         """
 
         try:
-            # TODO: Actually do this
-            # We do a head request to actually hit a protected endpoint without
-            # getting a whole bunch of data.
-            self.list_products()
-            self.list_product_types()
-            return (True, "")
-        except HTTPError as e:
-            message = f"Server did not return a valid response ({e})."
-        except Exception as e:
-            logger.exception(e)
-            message = str(e)
+            products_response = self.open_product_api_client.head("")
+            producttypes_response = self.open_product_types_api_client.head("sdd")
 
-        return (False, message)
+            if products_response.ok and producttypes_response.ok:
+                return True
+        except HTTPError as e:
+            logger.warning(f"Server did not return a valid response ({e}).")
+
+        return False, "Server did not return a valid response."
 
     def _make_get_request(self, client, url, **kwargs):
         """
