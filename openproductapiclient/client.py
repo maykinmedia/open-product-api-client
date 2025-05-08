@@ -5,7 +5,13 @@ from urllib.parse import urljoin
 from requests.exceptions import HTTPError
 from zgw_consumers.client import build_client as build_zgw_client
 
-from .utils import get_filled_params
+from .utils import (
+    ListProductsParams,
+    ListProductTypesParams,
+    ListThemesParams,
+    ListOrganizationsParams,
+    format_list_params,
+)
 import uuid
 from zgw_consumers import service
 
@@ -13,7 +19,9 @@ logger = logging.getLogger(__name__)
 
 
 class OpenProductClient:
-    def __init__(self, open_product_api_service: service, open_product_types_api_client: service):
+    def __init__(
+        self, open_product_api_service: service, open_product_types_api_client: service
+    ):
         self.open_product_api_client = build_zgw_client(
             service=open_product_api_service
         )
@@ -74,51 +82,14 @@ class OpenProductClient:
             return "Failed to fetch products API."
         return results
 
-    def list_products(
-        self,
-        *,
-        aanmaak_datum: str | None = None,
-        aanmaak_datum__gte: str | None = None,
-        aanmaak_datum__lte: str | None = None,
-        dataobject_attr: str | None = None,
-        documenten__uuid: str | None = None,
-        eigenaren__bsn: str | None = None,
-        eigenaren__klantnummer: str | None = None,
-        eigenaren__kvk_nummer: str | None = None,
-        eigenaren__uuid: str | None = None,
-        eigenaren__vestigingsnummer: str | None = None,
-        eind_datum: str | None = None,
-        eind_datum__gte: str | None = None,
-        eind_datum__lte: str | None = None,
-        frequentie: str | None = None,
-        gepubliceerd: bool | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
-        prijs: float | None = None,
-        prijs_gte: float | None = None,
-        prijs_lte: float | None = None,
-        producttype__code: str | None = None,
-        producttype__code__in: list[str] | None = None,
-        producttype__naam: str | None = None,
-        producttype__naam__in: list[str] | None = None,
-        producttype__uuid: str | None = None,
-        producttype__uuid__in: list[str] | None = None,
-        start_datum: str | None = None,
-        start_datum_gte: str | None = None,
-        start_datum_lte: str | None = None,
-        status: str | None = None,
-        uniforme_product_naam: str | None = None,
-        update_datum: str | None = None,
-        update_datum__gte: str | None = None,
-        update_datum__lte: str | None = None,
-        verbruiksobject_attr: str | None = None,
-    ) -> list:
+    def list_products(self, **params: ListProductsParams) -> list:
         """
         Retrieves products from products API.
         """
 
-        params = get_filled_params(locals())
-        return self._products_api_get_request("producten", **params)
+        formatted_params = format_list_params(params)
+
+        return self._products_api_get_request("producten", **formatted_params)
 
     def retrieve_product(self, uuid: str | uuid.UUID):
         """
@@ -148,40 +119,13 @@ class OpenProductClient:
             return "Failed to fetch producttypes API."
         return results
 
-    def list_product_types(
-        self,
-        *,
-        aanmaak_datum: str | None = None,
-        aanmaak_datum_gte: str | None = None,
-        aanmaak_datum_lte: str | None = None,
-        code: str | None = None,
-        externe_code: str | None = None,
-        gepubliceerd: bool | None = None,
-        keywords: list[str] | None = None,
-        letter: str | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
-        parameter: str | None = None,
-        processen__uuid: str | None = None,
-        themas__naam: str | None = None,
-        themas__naam__in: list[str] | None = None,
-        themas__uuid: str | None = None,
-        themas__uuid__in: list[str] | None = None,
-        toegestane_statussen: list[str] | None = None,
-        uniforme_product_naam: str | None = None,
-        update_datum: str | None = None,
-        update_datum__gte: str | None = None,
-        update_datum__lte: str | None = None,
-        verbruiksobject_schema_naam: str | None = None,
-        verzoektypen__uuid: str | None = None,
-        zaaktypen__uuid: str | None = None,
-    ) -> list:
+    def list_product_types(self, **params: ListProductTypesParams) -> list:
         """
         Retrieves all product types from producttypes API.
         """
 
-        params = get_filled_params(locals())
-        return self._producttypes_api_get_request("producttypen", **params)
+        formatted_params = format_list_params(params)
+        return self._producttypes_api_get_request("producttypen", **formatted_params)
 
     def retrieve_product_type(self, uuid: str | uuid.UUID):
         """
@@ -191,29 +135,14 @@ class OpenProductClient:
 
         return self._producttypes_api_get_request(f"producttypen/{uuid}/")
 
-    def list_themes(
-        self,
-        *,
-        aanmaak_datum: str | None = None,
-        aanmaak_datum__gte: str | None = None,
-        aanmaak_datum__lte: str | None = None,
-        gepubliceerd: bool | None = None,
-        hoofd_thema__naam: str | None = None,
-        hoofd_thema__uuid: str | None = None,
-        naam: str | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
-        update_datum: str | None = None,
-        update_datum__gte: str | None = None,
-        update_datum__lte: str | None = None,
-    ) -> list:
+    def list_themes(self, **params: ListThemesParams) -> list:
         """
         Retrieves all themes from producttypes API.
         Filter-arguments can be passed as kwargs.
         """
 
-        params = get_filled_params(locals())
-        return self._producttypes_api_get_request("themas", **params)
+        formatted_params = format_list_params(params)
+        return self._producttypes_api_get_request("themas", **formatted_params)
 
     def retrieve_theme(self, uuid: str | uuid.UUID, **kwargs):
         """
@@ -223,24 +152,11 @@ class OpenProductClient:
 
         return self._producttypes_api_get_request(f"themas/{uuid}/")
 
-    def list_organizations(
-        self,
-        *,
-        code: str | None = None,
-        email__iexact: str | None = None,
-        huisnummer__iexact: str | None = None,
-        naam__iexact: str | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
-        postcode: str | None = None,
-        stad: str | None = None,
-        straat__iexact: str | None = None,
-        telefoonnummer__contains: str | None = None,
-    ) -> list:
+    def list_organizations(self, **params: ListOrganizationsParams) -> list:
         """
         Retrieves all organizations from producttypes API.
         Filter-arguments can be passed as kwargs.
         """
 
-        params = get_filled_params(locals())
-        return self._producttypes_api_get_request("organisaties", **params)
+        formatted_params = format_list_params(params)
+        return self._producttypes_api_get_request("organisaties", **formatted_params)
