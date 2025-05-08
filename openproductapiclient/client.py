@@ -117,8 +117,6 @@ class OpenProductClient:
         Retrieves products from products API.
         """
 
-        print("PRODUCTS API CALLED")
-
         params = get_filled_params(locals())
         return self._products_api_get_request("producten", **params)
 
@@ -181,8 +179,6 @@ class OpenProductClient:
         """
         Retrieves all product types from producttypes API.
         """
-
-        print("PRODUCTTYPES API CALLED")
 
         params = get_filled_params(locals())
         return self._producttypes_api_get_request("producttypen", **params)
