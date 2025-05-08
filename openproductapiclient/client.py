@@ -1,19 +1,18 @@
 import logging
+import uuid
 from typing import Tuple
-from urllib.parse import urljoin
 
 from requests.exceptions import HTTPError
+from zgw_consumers import service
 from zgw_consumers.client import build_client as build_zgw_client
 
 from .utils import (
+    ListOrganizationsParams,
     ListProductsParams,
     ListProductTypesParams,
     ListThemesParams,
-    ListOrganizationsParams,
     format_list_params,
 )
-import uuid
-from zgw_consumers import service
 
 logger = logging.getLogger(__name__)
 
@@ -37,26 +36,14 @@ class OpenProductClient:
 
         try:
             products_response = self.open_product_api_client.head("")
-            producttypes_response = self.open_product_types_api_client.head("sdd")
+            producttypes_response = self.open_product_types_api_client.head("")
 
             if products_response.ok and producttypes_response.ok:
-                return True
+                return True, ""
         except HTTPError as e:
             logger.warning(f"Server did not return a valid response ({e}).")
 
         return False, "Server did not return a valid response."
-
-    def _make_get_request(self, client, url, **kwargs):
-        """
-        Makes a get request to a given client with
-        a given url and arguments.
-        """
-
-        return client.request(
-            "get",
-            urljoin(base=client.base_url, url=url),
-            params=kwargs,
-        )
 
     # **************************
     # Product API endpoints
@@ -68,8 +55,7 @@ class OpenProductClient:
         Filter-arguments can be passed as kwargs.
         """
 
-        client = self.open_product_api_client
-        response = self._make_get_request(client, url, **kwargs)
+        response = self.open_product_api_client.get(url=url, params=kwargs)
 
         response.raise_for_status()
         results = response.json()
@@ -105,8 +91,7 @@ class OpenProductClient:
         Filter-arguments can be passed as kwargs.
         """
 
-        client = self.open_product_types_api_client
-        response = self._make_get_request(client, url, **kwargs)
+        response = self.open_product_types_api_client.get(url=url, params=kwargs)
 
         response.raise_for_status()
         results = response.json()
