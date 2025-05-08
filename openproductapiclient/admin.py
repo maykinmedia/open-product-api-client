@@ -13,8 +13,8 @@ class ConfigurationAdmin(SingletonModelAdmin):
             None,
             {
                 "fields": (
-                    "objects_api_service",
-                    "object_type_api_service",
+                    "open_product_api_service",
+                    "open_product_types_api_service",
                     "status",
                 )
             },
