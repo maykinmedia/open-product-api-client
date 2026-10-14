@@ -1,3 +1,127 @@
 [build-system]
-requires = ["setuptools >= 30.3.0"]  # version supporting setup.cfg]
+requires = ["setuptools>=84.0.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-product-client"
+version = "0.3.0"
+description = "API Client library to communicate with the Open Product service."
+authors = [
+    {name = "Maykin", email = "support@maykinmedia.nl"}
+]
+readme = "README.rst"
+license = "EUPL-1.2"
+license-files = ["LICENSE.md"]
+keywords = ["maykin", "openproduct", "open product", "producten","producttypen", "common ground", "api client"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "ape-pie>=0.2.0",
+    "msgspec>=0.22.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/maykinmedia/open-product-api-client"
+"Bug Tracker" = "https://github.com/maykinmedia/open-product-api-client/issues"
+"Source Code" = "https://github.com/maykinmedia/open-product-api-client"
+
+[project.optional-dependencies]
+tests = [
+    "pytest",
+    "tox",
+    "ruff",
+    "pyright",
+    "vcrpy",
+    "pytest-recording",
+    "types-requests",
+    "pytest-cov"
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+release = [
+    "bump-my-version",
+]
+
+[tool.setuptools.packages.find]
+include = ["openproduct_client*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "vcr: mark tests that use VCR cassettes for HTTP interactions",
+]
+
+[tool.bumpversion]
+current_version = "0.3.0"
+files = [
+    {filename = "pyproject.toml"},
+    {filename = "README.rst"},
+]
+
+[tool.coverage.run]
+branch = true
+source = ["openproduct_client"]
+omit = [
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+skip_covered = true
+exclude_also = [
+    "if (typing\\.)?TYPE_CHECKING:",
+    "@(typing\\.)?overload",
+    "class .*\\(.*Protocol.*\\):",
+    "@(abc\\.)?abstractmethod",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+    "\\bpass$",
+]
+
+[tool.pyright]
+include = [
+    "openproduct_client",
+    "tests",
+]
+ignore = []
+pythonVersion = "3.12"
+pythonPlatform = "Linux"
+typeCheckingMode = "basic"
+
+[tool.ruff.lint]
+extend-select = [
+    "UP",  # pyupgrade
+    "LOG", # logging
+    "G",
+    "I",   # isort
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "PERF",# perflint
+    "B",   # flake8-bugbear
+    "TID251", # flake8-tidy-imports: banned API
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"typing.cast".msg = "Casting is an anti-pattern, use `assert isinstance(...)` instead, or suppress the error."
